@@ -4,12 +4,12 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/NekruzRakhimov/auth_service/internal/errs"
 	"github.com/gin-gonic/gin"
+
+	"github.com/NekruzRakhimov/auth_service/internal/errs"
 )
 
-
-func (s *Server)handleError(c *gin.Context, err error) {
+func (s *Server) handleError(c *gin.Context, err error) {
 	switch {
 	case errors.Is(err, errs.ErrProductNotfound) ||
 		errors.Is(err, errs.ErrUserNotFound) ||

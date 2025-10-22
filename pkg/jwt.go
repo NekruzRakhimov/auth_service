@@ -2,12 +2,12 @@ package pkg
 
 import (
 	"fmt"
-
 	"os"
 	"time"
 
-	"github.com/NekruzRakhimov/auth_service/internal/domain"
 	"github.com/dgrijalva/jwt-go"
+
+	"github.com/NekruzRakhimov/auth_service/internal/domain"
 )
 
 type CustomClaims struct {

@@ -3,15 +3,16 @@ package bootstrap
 import (
 	"net/http"
 
-	"github.com/NekruzRakhimov/auth_service/internal/config"
-	"github.com/NekruzRakhimov/auth_service/internal/usecase"
-	http2 "github.com/NekruzRakhimov/auth_service/internal/adapter/driving/http"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
+
+	http2 "github.com/NekruzRakhimov/auth_service/internal/adapter/driving/http"
+	"github.com/NekruzRakhimov/auth_service/internal/config"
+	"github.com/NekruzRakhimov/auth_service/internal/usecase"
 )
 
-func initDB(cfg config.Postgres, name string) (*sqlx.DB, error) {
+func initDB(cfg config.Postgres) (*sqlx.DB, error) {
 	connConfig, err := pgx.ParseConfig(cfg.ConnectionURL())
 	if err != nil {
 		return nil, err

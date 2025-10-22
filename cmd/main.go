@@ -5,11 +5,16 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/sethvargo/go-envconfig"
+
 	"github.com/NekruzRakhimov/auth_service/internal/bootstrap"
 	"github.com/NekruzRakhimov/auth_service/internal/config"
-	"github.com/sethvargo/go-envconfig"
 )
 
+// @title AuthService API
+// @contact.name AuthService API Service
+// @contact.url http://test.com
+// @contact.email test@test.com
 func main() {
 	var cfg config.Config
 
@@ -30,5 +35,4 @@ func main() {
 	}()
 
 	app.Run(ctx)
-
 }

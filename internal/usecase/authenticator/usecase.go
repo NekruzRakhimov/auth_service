@@ -12,13 +12,13 @@ import (
 )
 
 type UseCase struct {
-	cfg *config.Config
+	cfg         *config.Config
 	userStorage driven.UserStorage
 }
 
 func New(cfg *config.Config, userStorage driven.UserStorage) *UseCase {
 	return &UseCase{
-		cfg: cfg,
+		cfg:         cfg,
 		userStorage: userStorage,
 	}
 }

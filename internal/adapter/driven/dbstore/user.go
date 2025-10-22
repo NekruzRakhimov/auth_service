@@ -5,9 +5,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/NekruzRakhimov/auth_service/internal/domain"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog"
+
+	"github.com/NekruzRakhimov/auth_service/internal/domain"
 )
 
 type UserStorage struct {
@@ -23,18 +24,18 @@ type User struct {
 	FullName  string    `db:"full_name"`
 	Username  string    `db:"username"`
 	Password  string    `db:"password"`
-	Role      string     `db:"role"`
+	Role      string    `db:"role"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 }
 
 func (u *User) ToDomain() *domain.User {
 	return &domain.User{
-		ID: u.ID,
-		FullName: u.FullName,
-		Username: u.Username,
-		Password: u.Password,
-		Role: domain.Role(u.Role),
+		ID:        u.ID,
+		FullName:  u.FullName,
+		Username:  u.Username,
+		Password:  u.Password,
+		Role:      domain.Role(u.Role),
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}
@@ -49,7 +50,7 @@ func (u *User) FromDomain(d domain.User) {
 	u.UpdatedAt = d.UpdatedAt
 	u.CreatedAt = d.CreatedAt
 }
- 
+
 func (u *UserStorage) CreateUser(ctx context.Context, user domain.User) (err error) {
 	var dbUser User
 	dbUser.FromDomain(user)
@@ -71,7 +72,7 @@ func (u *UserStorage) CreateUser(ctx context.Context, user domain.User) (err err
 
 func (u *UserStorage) GetUserByID(ctx context.Context, id int) (domain.User, error) {
 	logger := zerolog.New(os.Stdout).With().Timestamp().Str("func_name", "repository.GetUserByID").Logger()
-	
+
 	var dbUser User
 	if err := u.db.GetContext(ctx, &dbUser, `
 		SELECT id, full_name, username, password, role, created_at, updated_at 

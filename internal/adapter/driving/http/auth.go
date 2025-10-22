@@ -4,9 +4,11 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/NekruzRakhimov/auth_service/internal/domain"
 	"github.com/NekruzRakhimov/auth_service/internal/errs"
-	"github.com/gin-gonic/gin"
+	"github.com/NekruzRakhimov/auth_service/pkg"
 )
 
 type SignUpRequest struct {
@@ -29,7 +31,6 @@ type SignUpRequest struct {
 // @Failure 500 {object} CommonError
 // @Router /auth/sign-up [post]
 func (s *Server) SignUp(c *gin.Context) {
-
 	var input SignUpRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
 		s.handleError(c, errors.Join(errs.ErrInvalidRequestBody, err))
@@ -47,7 +48,6 @@ func (s *Server) SignUp(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, CommonResponse{Message: "User created successfully!"})
 }
-
 
 type SignInRequest struct {
 	Username string `json:"username"`
@@ -84,6 +84,51 @@ func (s *Server) SignIn(c *gin.Context) {
 	})
 	if err != nil {
 		s.handleError(c, err)
+		return
+	}
+
+	accessToken, refreshToken, err := s.generateNewTokenPair(userID, userRole)
+	if err != nil {
+		s.handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, TokenPairResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	})
+}
+
+const (
+	refreshTokenHeader = "X-Refresh-Token"
+)
+
+// RefreshTokenPair
+// @Summary Обновить пару токенов
+// @Description Обновить пару токенов
+// @Tags Auth
+// @Produce json
+// @Param X-Refresh-Token header string true "вставьте refresh token"
+// @Success 200 {object} TokenPairResponse
+// @Failure 400 {object} CommonError
+// @Failure 404 {object} CommonError
+// @Failure 500 {object} CommonError
+// @Router /auth/refresh [get]
+func (s *Server) RefreshTokenPair(c *gin.Context) {
+	token, err := s.extractTokenFromHeader(c, refreshTokenHeader)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, CommonError{Error: err.Error()})
+		return
+	}
+
+	userID, isRefresh, userRole, err := pkg.ParseToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, CommonError{Error: err.Error()})
+		return
+	}
+
+	if !isRefresh {
+		c.JSON(http.StatusUnauthorized, CommonError{Error: "inappropriate token"})
 		return
 	}
 

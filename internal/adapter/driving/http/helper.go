@@ -4,9 +4,10 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/NekruzRakhimov/auth_service/internal/domain"
 	"github.com/NekruzRakhimov/auth_service/pkg"
-	"github.com/gin-gonic/gin"
 )
 
 func (s *Server) extractTokenFromHeader(c *gin.Context, headerKey string) (string, error) {
@@ -38,11 +39,11 @@ func (s *Server) generateNewTokenPair(userID int, userRole domain.Role) (string,
 	}
 
 	refreshToken, err := pkg.GenerateToken(userID,
-		s.cfg.AuthParams.AccessTokenTllMinutes,
+		s.cfg.AuthParams.RefreshTokenTllDays,
 		userRole, true)
 	if err != nil {
 		return "", "", err
 	}
 
-		return accessToken, refreshToken, nil
+	return accessToken, refreshToken, nil
 }

@@ -13,7 +13,7 @@ func initLayers(cfg config.Config) *App {
 	teardown := make([]func(), 0)
 	//log := logger.New(cfg.LogLevel, config.ServiceLabel, zap.WithCaller(true))
 
-	db, err := initDB(*cfg.Postgres, "hpay_astrasend")
+	db, err := initDB(*cfg.Postgres)
 	if err != nil {
 		panic(err)
 	}

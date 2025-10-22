@@ -4,15 +4,16 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/NekruzRakhimov/auth_service/internal/config"
 	"github.com/NekruzRakhimov/auth_service/internal/usecase"
-	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	router                     *gin.Engine
-	cfg                        *config.Config
-	uc *usecase.UseCases
+	router *gin.Engine
+	cfg    *config.Config
+	uc     *usecase.UseCases
 }
 
 const httpServerReadHeaderTimeout = 70 * time.Second
@@ -24,9 +25,9 @@ func New(
 	r := gin.New()
 
 	srv := &Server{
-		router:                     r,
-		cfg:                        cfg,
-		uc: uc,
+		router: r,
+		cfg:    cfg,
+		uc:     uc,
 	}
 
 	srv.endpoints()

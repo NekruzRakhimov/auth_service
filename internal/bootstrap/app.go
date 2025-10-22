@@ -3,9 +3,10 @@ package bootstrap
 import (
 	"context"
 	"errors"
-	"github.com/NekruzRakhimov/auth_service/internal/config"
 	"net/http"
 	"time"
+
+	"github.com/NekruzRakhimov/auth_service/internal/config"
 )
 
 const gracefulDeadline = 5 * time.Second
