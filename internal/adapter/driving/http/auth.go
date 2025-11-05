@@ -14,6 +14,7 @@ import (
 type SignUpRequest struct {
 	FullName string `json:"full_name"`
 	Username string `json:"username"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
@@ -41,6 +42,7 @@ func (s *Server) SignUp(c *gin.Context) {
 		FullName: input.FullName,
 		Username: input.Username,
 		Password: input.Password,
+		Email:    input.Email,
 	}); err != nil {
 		s.handleError(c, err)
 		return

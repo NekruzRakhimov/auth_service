@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"github.com/NekruzRakhimov/auth_service/internal/adapter/driven/amqp"
 
 	"github.com/NekruzRakhimov/auth_service/internal/adapter/driven/dbstore"
 	"github.com/NekruzRakhimov/auth_service/internal/config"
@@ -12,6 +13,24 @@ import (
 func initLayers(cfg config.Config) *App {
 	teardown := make([]func(), 0)
 	//log := logger.New(cfg.LogLevel, config.ServiceLabel, zap.WithCaller(true))
+
+	_, amqpCh := amqp.InitAMQPProducer(cfg.AMQPURL)
+	teardown = append(teardown,
+		func() {
+			err := amqpCh.Close()
+			if err != nil {
+				fmt.Printf("Error closing AMQP consumer: %s\n", err)
+				return
+			}
+		},
+	)
+
+	authQueue, err := amqp.InitQueue(amqpCh, "auth-queue")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	amqpProducers := amqp.NewProducersAMQP(authQueue, amqpCh)
 
 	db, err := initDB(*cfg.Postgres)
 	if err != nil {
@@ -28,7 +47,7 @@ func initLayers(cfg config.Config) *App {
 		}
 	})
 
-	uc := usecase.New(cfg, storage)
+	uc := usecase.New(cfg, storage, amqpProducers)
 
 	httpSrv := initHTTPService(&cfg, uc)
 

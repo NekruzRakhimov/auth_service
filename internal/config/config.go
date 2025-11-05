@@ -9,6 +9,7 @@ const ServiceLabel = "auth_service"
 
 type Config struct {
 	HTTPPort   string     `env:"HTTP_PORT" default:"8284"`
+	AMQPURL    string     `env:"AMQP_URL"`
 	Postgres   *Postgres  `env:",prefix=POSTGRES_"`
 	AuthParams AuthParams `env:",prefix=JWT_"`
 }

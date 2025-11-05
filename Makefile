@@ -21,3 +21,6 @@ migrate-create:
 
 lint:
 	golangci-lint run ./...
+
+swag:
+	swag init -o api/docs -g cmd/main.go

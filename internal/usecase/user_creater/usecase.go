@@ -2,8 +2,10 @@ package usercreater
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
-
+	"fmt"
+	"github.com/NekruzRakhimov/auth_service/internal/adapter/driven/amqp"
 	"github.com/NekruzRakhimov/auth_service/internal/config"
 	"github.com/NekruzRakhimov/auth_service/internal/domain"
 	"github.com/NekruzRakhimov/auth_service/internal/errs"
@@ -14,12 +16,14 @@ import (
 type UseCase struct {
 	cfg         *config.Config
 	userStorage driven.UserStorage
+	amqp        driven.AmqpProducer
 }
 
-func New(cfg *config.Config, userStorage driven.UserStorage) *UseCase {
+func New(cfg *config.Config, userStorage driven.UserStorage, amqp driven.AmqpProducer) *UseCase {
 	return &UseCase{
 		cfg:         cfg,
 		userStorage: userStorage,
+		amqp:        amqp,
 	}
 }
 
@@ -46,6 +50,21 @@ func (u *UseCase) CreateUser(ctx context.Context, user domain.User) (err error) 
 	if err = u.userStorage.CreateUser(ctx, user); err != nil {
 		return err
 	}
+
+	go func() {
+		msg := amqp.Message{
+			Recipient: user.Email,
+		}
+
+		rawMsg, err := json.Marshal(msg)
+		if err != nil {
+			fmt.Printf("Error marshalling message: %v\n", err)
+		}
+
+		if err = u.amqp.Publish(ctx, "auth-queue", rawMsg); err != nil {
+			fmt.Printf("Error publishing message: %v\n", err)
+		}
+	}()
 
 	return nil
 }

@@ -9,6 +9,13 @@ definitions:
       message:
         type: string
     type: object
+  http.EmailsResponse:
+    properties:
+      emails:
+        items:
+          type: string
+        type: array
+    type: object
   http.SignInRequest:
     properties:
       password:
@@ -18,6 +25,8 @@ definitions:
     type: object
   http.SignUpRequest:
     properties:
+      email:
+        type: string
       full_name:
         type: string
       password:
@@ -138,4 +147,42 @@ paths:
       summary: Регистрация
       tags:
       - Auth
+  /internal/emails:
+    get:
+      description: Список email'ов
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.EmailsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.CommonError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.CommonError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.CommonError'
+      summary: Список email'ов
+      tags:
+      - Internal
+  /ping:
+    get:
+      description: Проверка сервиса
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.CommonResponse'
+      summary: Health-check
+      tags:
+      - Ping
 swagger: "2.0"
