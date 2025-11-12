@@ -3,8 +3,8 @@ package bootstrap
 import (
 	"context"
 	"fmt"
-	"github.com/NekruzRakhimov/auth_service/internal/adapter/driven/amqp"
 
+	"github.com/NekruzRakhimov/auth_service/internal/adapter/driven/amqp"
 	"github.com/NekruzRakhimov/auth_service/internal/adapter/driven/dbstore"
 	"github.com/NekruzRakhimov/auth_service/internal/config"
 	"github.com/NekruzRakhimov/auth_service/internal/usecase"

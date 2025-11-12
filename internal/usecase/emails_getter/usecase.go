@@ -3,6 +3,7 @@ package emails_getter
 import (
 	"context"
 	"fmt"
+
 	"github.com/NekruzRakhimov/auth_service/internal/config"
 	"github.com/NekruzRakhimov/auth_service/internal/port/driven"
 )

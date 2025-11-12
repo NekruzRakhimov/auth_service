@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"github.com/NekruzRakhimov/auth_service/internal/adapter/driven/amqp"
 	"github.com/NekruzRakhimov/auth_service/internal/config"
 	"github.com/NekruzRakhimov/auth_service/internal/domain"

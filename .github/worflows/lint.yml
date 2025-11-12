@@ -1,0 +1,56 @@
+name: Lint (Go)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  golangci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        go-version: [ '1.22.x' ]  # можно добавить '1.23.x'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+          check-latest: true
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ matrix.go-version }}-
+
+      - name: Download deps
+        run: go mod download
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: go fmt (check only)
+        run: |
+          set -e
+          FILES=$(gofmt -l .)
+          if [ -n "$FILES" ]; then
+            echo "These files are not gofmt'ed:"
+            echo "$FILES"
+            exit 1
+          fi
