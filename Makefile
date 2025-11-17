@@ -1,7 +1,7 @@
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
+POSTGRES_PORT=5434
 POSTGRES_DATABASE=auth_service_db
 
 # DB_URL=postgres://user:password@host:port/db?sslmode=disable
