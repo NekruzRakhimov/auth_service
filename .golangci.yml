@@ -1,138 +1,34 @@
-version: "2"
+run:
+  timeout: 3m
+  tests: true
 
 linters:
-  default: standard
-
   enable:
-    - dogsled
-    - dupl
-    - errcheck
-    - gocognit
-    - goconst
-    - gocyclo
     - govet
-    - ineffassign
-    - misspell
-    - prealloc
-    - unconvert
-    - whitespace
-    - staticcheck
-    - asasalint
-    - asciicheck
-    - bidichk
-    - bodyclose
-    - containedctx
-    - contextcheck
-    - decorder
-    - dupword
-    - durationcheck
-    - errchkjson
-    - errname
-    - errorlint
-    - exhaustive
-    - copyloopvar
-    - forbidigo
-    - forcetypeassert
-    - ginkgolinter
-    - gocheckcompilerdirectives
-    - gocritic
-    - godot
-    - err113
-    - goheader
-    - gomoddirectives
-    - gomodguard
-    - goprintffuncname
-    - gosmopolitan
-    - grouper
-    - importas
-    - interfacebloat
-    - ireturn
-    - loggercheck
-    - maintidx
-    - makezero
-    - mirror
-    - musttag
-    - nestif
-    - nilerr
-    - nilnil
-    - noctx
-    - nonamedreturns
-    - nosprintfhostport
-    - paralleltest
-    - predeclared
-    - promlinter
-    - reassign
-    - revive
-    - rowserrcheck
-    - sqlclosecheck
-    - testableexamples
-    - testpackage
-    - thelper
-    - tparallel
-    - unparam
-    - usestdlibvars
-    - varnamelen
-    - wastedassign
-    - wrapcheck
-    - zerologlint
-    - gochecknoglobals
-    - gochecknoinits
-    - godox
-    - nakedret
-    - cyclop
-    - lll
-  disable:
-    - nlreturn
-    - tagalign
-    - wsl
-    - depguard
-
-  settings:
-    revive:
-      rules:
-        - name: exported
-          disabled: true
-    godot:
-      scope: all
-      period: false
-      capital: false
-    varnamelen:
-      min-name-length: 2
-      ignore-decls:
-        - c *fiber.Ctx
-        - t testing.T
-    wrapcheck:
-      ignore-sigs:
-        - .SendStatus(
-        - .SendString(
-        - .JSON(
-        - .Next(
-        - .Errorf(
-        - errors.New(
-        - status.Error(
-    exhaustive:
-      default-signifies-exhaustive: true
-    errcheck:
-      disable-default-exclusions: true
-      exclude-functions:
-        - (github.com/jackc/pgx/v5.Tx).Rollback
-
-  exclusions:
-    paths:
-      - docs/
-      - vendor/
-      - bin/
-      - var/
-      - tmp/
-      - "\\.pb\\.go$"
-      - "\\.gen\\.go$"
-      - "_test\\.go$"
-      - "^go\\.mod$"
-
-formatters:
-  enable:
     - gofmt
     - goimports
+    - staticcheck
+    - errcheck
+    - ineffassign
+    - unused
+    - gocyclo
+    - gosimple
+    - misspell
+    - unparam
+    - prealloc
+    - whitespace
+  disable:
+    - funlen     # отключим ограничение длины функций
 
-run:
-  timeout: 10m
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+
+output:
+  formats:
+    - format: colored-line-number
+  print-issued-lines: true
